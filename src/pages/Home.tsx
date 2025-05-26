@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../redux/cartSlice";
+import { RootState } from "../redux/store";
 import {
   Container,
   Row,
@@ -29,6 +32,9 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
 
+  const dispatch = useDispatch();
+  const cart = useSelector((state: RootState) => state.cart.items);
+
   const fetchProducts = async (reset = false) => {
     setLoading(true);
 
@@ -47,7 +53,6 @@ const Home = () => {
 
     let data: Product[] = res.data;
 
-    // סינון לפי שם (בעברית) בצד לקוח
     if (search) {
       const searchLower = search.toLowerCase();
       data = data.filter((p) =>
@@ -55,7 +60,6 @@ const Home = () => {
       );
     }
 
-    // שמירה לטובת אינסוף גלילה
     if (reset || page === 1) {
       setAllProducts(data);
       setProducts(data.slice(0, 20));
@@ -103,6 +107,16 @@ const Home = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleAddToCart = (product: Product) => {
+    const exists = cart.find((p) => p.id === product.id);
+    if (exists) {
+      alert("המוצר כבר בסל!");
+      return;
+    }
+    dispatch(addToCart(product));
+    alert("המוצר נוסף לסל 🎉");
+  };
 
   return (
     <Container className="py-4">
@@ -162,6 +176,9 @@ const Home = () => {
                 <Card.Title>{p.name}</Card.Title>
                 <Card.Text>{p.category}</Card.Text>
                 <Card.Text>{p.price} ₪</Card.Text>
+                <Button variant="success" onClick={() => handleAddToCart(p)}>
+                  הוסף לסל
+                </Button>
               </Card.Body>
             </Card>
           </Col>

@@ -3,8 +3,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { removeFromCart, clearCart } from "../redux/cartSlice";
 
+
+
 const Cart = () => {
+
+ 
   const cart = useSelector((state: RootState) => state.cart.items);
+  console.log("📦 תוכן הסל ב־Redux:", cart);
+
   const dispatch = useDispatch();
 
   const handleRemove = (id: number) => {
