@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "id": "10",
+      "email": "admin@example.com",
+      "password": "123456",
+      "isAdmin": true
+    },
+    {
+      "id": "e89f",
+      "email": "esther128979@gmail.com",
+      "password": "123456Ee@",
+      "isAdmin": false
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "name": "ספר תהילים",
+      "category": "ספרים",
+      "price": 25,
+      "image": "https://www.kodeshland.co.il/wp-content/uploads/2021/10/WhatsApp-Image-2021-10-07-at-14.03.40.jpeg"
+    },
+    {
+      "id": "2",
+      "name": "סידור תפילה",
+      "category": "ספרים",
+      "price": 30,
+      "image": "https://d3m9l0v76dty0.cloudfront.net/system/photos/3153815/large/2a08496ccdd58bd1a182d9bac4b66fb2.jpg"
+    },
+    {
+      "id": "3",
+      "name": "עט יפה",
+      "category": "משרד",
+      "price": 10,
+      "image": "https://via.placeholder.com/150"
+    },
+    {
+      "id": "4",
+      "name": "קלסר",
+      "category": "משרד",
+      "price": 15,
+      "image": "https://via.placeholder.com/150"
+    },
+    {
+      "id": "38b6",
+      "name": "בקבוק",
+      "category": "כלי בית",
+      "price": 10,
+      "image": "https://babyteva.co.il/images/stories/virtuemart/product/unnamed%20(32).jpg"
+    }
+  ],
+  "reviews": []
+}
