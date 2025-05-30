@@ -3,66 +3,95 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/userSlice";
+import { Container, Row, Col, Card, Button, Alert } from "react-bootstrap";
+import "../index.css";
 
 const Login = () => {
   const navigate = useNavigate();
   const [serverError, setServerError] = useState("");
+  const dispatch = useDispatch();
 
   return (
-    <div className="login-container">
-      <h2>התחברות</h2>
+    <div className="auth-page-container">
+      <Container className="py-5">
+        <Row className="justify-content-center align-items-center">
+          {/* צד של תמונות או עיצוב */}
+          <Col md={6} className="text-center d-none d-md-block">
+            <h1 className="display-5 bakery-title mb-4">Welcome Back to <br />Cookie Monster 🍪</h1>
+            <p className="lead text-muted">Fresh treats, always ready! Log in to order your favorites.</p>
+            <img
+              src="https://i.etsystatic.com/54907703/r/il/ca160c/6688687115/il_fullxfull.6688687115_i6ss.jpg"
+              alt="Cookies"
+              className="img-fluid rounded shadow-sm"
+              style={{ maxHeight: "350px", objectFit: "cover" }}
+            />
+          </Col>
 
-      <Formik
-        initialValues={{ email: "", password: "" }}
-        validationSchema={Yup.object({
-          email: Yup.string().email("אימייל לא תקין").required("שדה חובה"),
-          password: Yup.string().required("שדה חובה"),
-        })}
-        onSubmit={async (values, { setSubmitting }) => {
-          setServerError("");
-          try {
-            const res = await api.get("/users", {
-              params: {
-                email: values.email,
-                password: values.password,
-              },
-            });
+          {/* צד של טופס */}
+          <Col md={6} lg={5}>
+            <Card className="shadow-lg p-4 animated-card mt-4 mt-md-0">
+              <h3 className="text-center mb-3">Login to your account</h3>
 
-            if (res.data.length === 1) {
-              const user = res.data[0];
-              console.log("התחברות הצליחה:", user);
+              <Formik
+                initialValues={{ email: "", password: "" }}
+                validationSchema={Yup.object({
+                  email: Yup.string().email("Invalid email").required("Required"),
+                  password: Yup.string().required("Required"),
+                })}
+                onSubmit={async (values, { setSubmitting }) => {
+                  setServerError("");
+                  try {
+                    const res = await api.get("/users", {
+                      params: {
+                        email: values.email,
+                        password: values.password,
+                      },
+                    });
 
-              // ✅ שורה חשובה:
-              localStorage.setItem("user", JSON.stringify(user));
+                    if (res.data.length === 1) {
+                      const user = res.data[0];
+                      dispatch(login(user));
+                      navigate("/");
+                    } else {
+                      setServerError("Invalid email or password");
+                    }
+                  } catch {
+                    setServerError("Server error. Please try again.");
+                  }
+                  setSubmitting(false);
+                }}
+              >
+                <Form>
+                  <div className="mb-3">
+                    <label htmlFor="email">Email</label>
+                    <Field name="email" type="email" className="form-control" />
+                    <ErrorMessage name="email" component="div" className="text-danger small" />
+                  </div>
 
-              navigate("/");
-            } else {
-              setServerError("אימייל או סיסמה שגויים");
-            }
-          } catch (err) {
-            setServerError("שגיאה בשרת");
-          }
-          setSubmitting(false);
-        }}
-      >
-        <Form>
-          <div>
-            <label htmlFor="email">אימייל</label>
-            <Field name="email" type="email" />
-            <ErrorMessage name="email" component="div" className="error" />
-          </div>
+                  <div className="mb-3">
+                    <label htmlFor="password">Password</label>
+                    <Field name="password" type="password" className="form-control" />
+                    <ErrorMessage name="password" component="div" className="text-danger small" />
+                  </div>
 
-          <div>
-            <label htmlFor="password">סיסמה</label>
-            <Field name="password" type="password" />
-            <ErrorMessage name="password" component="div" className="error" />
-          </div>
+                  {serverError && <Alert variant="danger">{serverError}</Alert>}
 
-          {serverError && <div className="error">{serverError}</div>}
+                  <div className="d-grid mt-3">
+                    <Button type="submit" variant="success">Login</Button>
+                  </div>
 
-          <button type="submit">התחבר</button>
-        </Form>
-      </Formik>
+                  <div className="text-center mt-3 small">
+                    Don't have an account?{" "}
+                    <a href="/register" className="text-decoration-underline">Register here</a>
+                  </div>
+                </Form>
+              </Formik>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

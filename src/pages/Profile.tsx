@@ -1,40 +1,64 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Container, Button } from "react-bootstrap";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../redux/store";
+import { removeFromCart, clearCart } from "../redux/cartSlice";
 
-interface User {
-  id: number | string;
-  email: string;
-  isAdmin: boolean;
-}
 
-const Profile = () => {
-  const navigate = useNavigate();
+const Cart = () => {
+  const cart = useSelector((state: RootState) => state.cart.items);
+  const dispatch = useDispatch();
 
-  const storedUser = localStorage.getItem("user");
-  const user: User | null = storedUser ? JSON.parse(storedUser) : null;
-
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user, navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
+  const handleRemove = (id: number) => {
+    dispatch(removeFromCart(id));
   };
 
-  if (!user) return null;
+  const handleClearCart = () => {
+    if (window.confirm("Are you sure you want to empty your cart?")) {
+      dispatch(clearCart());
+    }
+  };
+
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
 
   return (
     <Container className="py-4">
-      <h2>פרופיל משתמש</h2>
-      <p><strong>אימייל:</strong> {user.email}</p>
-      <p><strong>הרשאות:</strong> {user.isAdmin ? "מנהל" : "משתמש רגיל"}</p>
-      <Button variant="danger" onClick={handleLogout}>התנתק</Button>
+      <h2 className="mb-4 text-center"> Cart</h2>
+
+      {cart.length === 0 ? (
+        <p className="text-center"> The cart is empty</p>
+      ) : (
+        <>
+          <Row>
+            {cart.map((item) => (
+              <Col key={item.id} xs={12} md={6} lg={4} xl={3} className="mb-4">
+                <Card>
+                  <Card.Img variant="top" src={item.image} />
+                  <Card.Body>
+                    <Card.Title>{item.name}</Card.Title>
+                    <Card.Text>₪{item.price}</Card.Text>
+                    <Button
+                      variant="danger"
+                      onClick={() => handleRemove(item.id)}
+                    >
+                     Remove from cart
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+
+          <div className="mt-4 text-end">
+            <h5>סה"כ פריטים: {cart.length}</h5>
+            <h5>סה"כ לתשלום: ₪{total}</h5>
+            <Button variant="outline-danger" onClick={handleClearCart}>
+              נקה את הסל
+            </Button>
+          </div>
+        </>
+      )}
     </Container>
   );
 };
 
-export default Profile;
+export default Cart;

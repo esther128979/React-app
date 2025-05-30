@@ -1,16 +1,11 @@
+// עגלת קניות - סכום כולל בראש + עיצוב תמונות אחיד לקונדיטוריה
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { removeFromCart, clearCart } from "../redux/cartSlice";
 
-
-
 const Cart = () => {
-
- 
   const cart = useSelector((state: RootState) => state.cart.items);
-  console.log("📦 תוכן הסל ב־Redux:", cart);
-
   const dispatch = useDispatch();
 
   const handleRemove = (id: number) => {
@@ -18,47 +13,63 @@ const Cart = () => {
   };
 
   const handleClearCart = () => {
-    dispatch(clearCart());
+    if (window.confirm("Are you sure you want to clear the cart?")) {
+      dispatch(clearCart());
+    }
   };
 
   const total = cart.reduce((sum, item) => sum + item.price, 0);
-    console.log("🎯 סל מה-redux:", cart);
 
   return (
     <Container className="py-4">
-      <h2 className="mb-4">עגלת הקניות</h2>
+      <h2 className="mb-4 text-center">🧺 Your Shopping Cart</h2>
 
       {cart.length === 0 ? (
-        <p>העגלה ריקה</p>
+        <p className="text-center">Your cart is currently empty 🍪</p>
       ) : (
         <>
+          {/* סכום כולל בראש הדף */}
+          <Card className="mb-4 shadow-sm border-success">
+            <Card.Body className="text-center">
+              <h4 className="text-success mb-1">Total to Pay:</h4>
+              <h2 className="fw-bold text-success">₪{total}</h2>
+              <p className="text-muted">You have {cart.length} items in your cart</p>
+              <Button variant="outline-danger" onClick={handleClearCart}>
+                Clear Cart
+              </Button>
+            </Card.Body>
+          </Card>
+
+          {/* רשימת המוצרים */}
           <Row>
             {cart.map((item) => (
               <Col key={item.id} xs={12} md={6} lg={4} xl={3} className="mb-4">
-                <Card>
-                  <Card.Img variant="top" src={item.image} />
-                  <Card.Body>
-                    <Card.Title>{item.name}</Card.Title>
-                    <Card.Text>{item.price} ₪</Card.Text>
+                <Card className="shadow-sm h-100 d-flex flex-column">
+                  <Card.Img
+                    variant="top"
+                    src={item.image}
+                    style={{
+                      height: "250px",
+                      objectFit: "cover",
+                      borderBottom: "1px solid #eee",
+                    }}
+                  />
+                  <Card.Body className="text-center d-flex flex-column justify-content-between">
+                    <div>
+                      <Card.Title>{item.name}</Card.Title>
+                      <Card.Text className="fw-bold">₪{item.price}</Card.Text>
+                    </div>
                     <Button
-                      variant="danger"
+                      variant="outline-danger"
                       onClick={() => handleRemove(item.id)}
                     >
-                      הסר
+                      Remove
                     </Button>
                   </Card.Body>
                 </Card>
               </Col>
             ))}
           </Row>
-
-          <div className="mt-4 text-end">
-            <h5>סה"כ פריטים: {cart.length}</h5>
-            <h5>סה"כ לתשלום: ₪{total}</h5>
-            <Button variant="outline-danger" onClick={handleClearCart}>
-              נקה את הסל
-            </Button>
-          </div>
         </>
       )}
     </Container>

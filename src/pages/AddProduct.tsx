@@ -9,6 +9,7 @@ const AddProduct = () => {
   const [image, setImage] = useState("");
   const [success, setSuccess] = useState(false);
 
+  // שליחת טופס והוספת מוצר חדש
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -44,20 +45,37 @@ const AddProduct = () => {
 
         <Form.Group className="mb-3">
           <Form.Label>קטגוריה</Form.Label>
-          <Form.Control value={category} onChange={(e) => setCategory(e.target.value)} required />
+          <Form.Select value={category} onChange={(e) => setCategory(e.target.value)} required>
+            <option value="">בחר קטגוריה</option>
+            <option value="Pastries">Pastries</option>
+            <option value="Cakes">Cakes</option>
+            <option value="Breads">Breads</option>
+            <option value="Cookies">Cookies</option>
+          </Form.Select>
         </Form.Group>
 
         <Form.Group className="mb-3">
           <Form.Label>מחיר</Form.Label>
-          <Form.Control type="number" value={price} onChange={(e) => setPrice(e.target.value)} required />
+          <Form.Control
+            type="number"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            required
+          />
         </Form.Group>
 
         <Form.Group className="mb-3">
           <Form.Label>כתובת תמונה</Form.Label>
-          <Form.Control value={image} onChange={(e) => setImage(e.target.value)} required />
+          <Form.Control
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
+            required
+          />
         </Form.Group>
 
-        <Button type="submit" variant="primary">הוסף מוצר</Button>
+        <Button type="submit" variant="primary">
+          הוסף מוצר
+        </Button>
       </Form>
     </Container>
   );

@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api";
-import { Container, Card, Spinner, Button } from "react-bootstrap";
+import {
+  Container,
+  Card,
+  Spinner,
+  Button,
+  Toast,
+  ToastContainer,
+} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
 import { RootState } from "../redux/store";
@@ -18,6 +25,7 @@ const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showToast, setShowToast] = useState(false);
 
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart.items);
@@ -39,17 +47,20 @@ const ProductDetails = () => {
 
   const handleAddToCart = () => {
     if (!product) return;
-  
+
     const exists = cart.find((p) => p.id === Number(product.id));
     if (exists) {
       alert("המוצר כבר נמצא בסל!");
       return;
     }
-  
+
     dispatch(addToCart({ ...product, id: Number(product.id) }));
-    alert("המוצר נוסף לסל 🎉");
+    setShowToast(true);
+
+    setTimeout(() => {
+      setShowToast(false);
+    }, 5000); // 5 שניות
   };
-  
 
   if (loading) {
     return (
@@ -70,6 +81,21 @@ const ProductDetails = () => {
 
   return (
     <Container className="py-4">
+      <ToastContainer position="bottom-end" className="p-3">
+        <Toast
+          show={showToast}
+          onClose={() => setShowToast(false)}
+          bg="success"
+          delay={5000}
+          autohide
+        >
+          <Toast.Header>
+            <strong className="me-auto"> Cart </strong>
+          </Toast.Header>
+          <Toast.Body className="text-white">🎉The product has been added to Cart</Toast.Body>
+        </Toast>
+      </ToastContainer>
+
       <Card>
         <Card.Img variant="top" src={product.image} />
         <Card.Body>

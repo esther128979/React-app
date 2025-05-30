@@ -11,44 +11,261 @@
       "email": "esther128979@gmail.com",
       "password": "123456Ee@",
       "isAdmin": false
+    },
+    {
+      "id": "9be4",
+      "email": "esther128971@gmail.com",
+      "password": "4444444444Aa@",
+      "isAdmin": false
+    },
+    {
+      "id": "39d1",
+      "email": "aaaaaa@gmail.com",
+      "password": "12344321Aa@",
+      "isAdmin": false
     }
   ],
   "products": [
     {
+      "id": "6",
+      "name": "Butter croissant",
+      "category": "Pastries",
+      "price": 12,
+      "image": "https://images.ricardocuisine.com/services/recipes/croissant1.jpg"
+    },
+    {
       "id": "1",
-      "name": "ספר תהילים",
-      "category": "ספרים",
-      "price": 25,
-      "image": "https://www.kodeshland.co.il/wp-content/uploads/2021/10/WhatsApp-Image-2021-10-07-at-14.03.40.jpeg"
+      "name": "Rich Chocolate Cake",
+      "category": "Cakes",
+      "price": 40,
+      "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-1043451_11-4713959.jpg?quality=90&resize=440,400"
     },
     {
       "id": "2",
-      "name": "סידור תפילה",
-      "category": "ספרים",
-      "price": 30,
-      "image": "https://d3m9l0v76dty0.cloudfront.net/system/photos/3153815/large/2a08496ccdd58bd1a182d9bac4b66fb2.jpg"
+      "name": "Whole Spelt Bread",
+      "category": "Breads",
+      "price": 20,
+      "image": "http://mydeliciousblog.com/wp-content/uploads/2020/04/Spelt-Bread.jpg"
     },
     {
       "id": "3",
-      "name": "עט יפה",
-      "category": "משרד",
-      "price": 10,
-      "image": "https://hahacanvas.co.il/wp-content/uploads/2021/11/%D7%AA%D7%9E%D7%95%D7%A0%D7%95%D7%AA-%D7%99%D7%A4%D7%95%D7%AA-%D7%9C%D7%94%D7%93%D7%A4%D7%A1%D7%94-12.jpg"
+      "name": "Chocolate Chip Cookies",
+      "category": "Cookies",
+      "price": 15,
+      "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587"
     },
     {
       "id": "4",
-      "name": "קלסר",
-      "category": "משרד",
-      "price": 15,
-      "image": "https://hahacanvas.co.il/wp-content/uploads/2021/11/%D7%AA%D7%9E%D7%95%D7%A0%D7%95%D7%AA-%D7%99%D7%A4%D7%95%D7%AA-%D7%9C%D7%94%D7%93%D7%A4%D7%A1%D7%94-20.jpg"
+      "name": "Mini Cheese Pastry",
+      "category": "Pastries",
+      "price": 12,
+      "image": "https://www.halfbakedharvest.com/wp-content/uploads/2020/02/Flaky-Broccoli-Cheddar-Soup-Mini-Pies-5-700x1050.jpg"
     },
     {
-      "id": "38b6",
-      "name": "בקבוק",
-      "category": "כלי בית",
+      "id": "5",
+      "name": "Cinnamon Roll",
+      "category": "Pastries",
       "price": 10,
-      "image": "https://babyteva.co.il/images/stories/virtuemart/product/unnamed%20(32).jpg"
+      "image": "https://i.imgur.com/zOtqtUj.jpg"
+    },
+    {
+      "id": "6",
+      "name": "Butter croissant",
+      "category": "Pastries",
+      "price": 12,
+      "image": "https://images.ricardocuisine.com/services/recipes/croissant1.jpg"
+    },
+    {
+      "id": "7",
+      "name": "Rich Chocolate Cake",
+      "category": "Cakes",
+      "price": 40,
+      "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-1043451_11-4713959.jpg?quality=90&resize=440,400"
+    },
+    {
+      "id": "8",
+      "name": "Whole Spelt Bread",
+      "category": "Breads",
+      "price": 20,
+      "image": "http://mydeliciousblog.com/wp-content/uploads/2020/04/Spelt-Bread.jpg"
+    },
+    {
+      "id": "9",
+      "name": "Chocolate Chip Cookies",
+      "category": "Cookies",
+      "price": 15,
+      "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587"
+    },
+    {
+      "id": "10",
+      "name": "Mini Cheese Pastry",
+      "category": "Pastries",
+      "price": 12,
+      "image": "https://www.halfbakedharvest.com/wp-content/uploads/2020/02/Flaky-Broccoli-Cheddar-Soup-Mini-Pies-5-700x1050.jpg"
+    },
+    {
+      "id": "11",
+      "name": "Cinnamon Roll",
+      "category": "Pastries",
+      "price": 10,
+      "image": "https://i.imgur.com/zOtqtUj.jpg"
+    },
+    {
+      "id": "12",
+      "name": "Almond Danish",
+      "category": "Pastries",
+      "price": 14,
+      "image": "https://images.squarespace-cdn.com/content/v1/59b9b4d8197aea401322fd78/1613595447484-XSADKK6QROMS3LSPNDMV/01390E6E-3EAD-4DF9-A66C-1DE4BC9909DF.jpeg"
+    },
+    {
+      "id": "13",
+      "name": "Lemon Drizzle Cake",
+      "category": "Cakes",
+      "price": 35,
+      "image": "https://images.getrecipekit.com/20230413134855-lemon-20drizzle.jpg?aspect_ratio=16:9&quality=90&"
+    },
+    {
+      "id": "14",
+      "name": "Sourdough Loaf",
+      "category": "Breads",
+      "price": 22,
+      "image": "https://www.cravethegood.com/wp-content/uploads/2022/01/cinnamon-raisin-sourdough-bread-35.jpg"
+    },
+    {
+      "id": "15",
+      "name": "Oatmeal Raisin Cookies",
+      "category": "Cookies",
+      "price": 13,
+      "image": "https://lilluna.com/wp-content/uploads/2023/02/oatmeal-raisin-cookies2-resize-15.jpg"
+    },
+    {
+      "id": "16",
+      "name": "Raspberry Tart",
+      "category": "Pastries",
+      "price": 15,
+      "image": "https://i0.wp.com/frenchfoodwithlove.com/wp-content/uploads/2020/06/Raspberry-Custard-Tart-2.jpg?fit=800%2C1000&ssl=1"
+    },
+    {
+      "id": "17",
+      "name": "Carrot Cake",
+      "category": "Cakes",
+      "price": 38,
+      "image": "https://www.onceuponachef.com/images/2024/03/carrot-cake-1200x1612.jpg"
+    },
+    {
+      "id": "18",
+      "name": "Rye Bread",
+      "category": "Breads",
+      "price": 18,
+      "image": "https://flour.co.uk/wp-content/uploads/2021/04/MarriagesDarkRyeloaf-1-e1672827142751.jpg.webp"
+    },
+    {
+      "id": "19",
+      "name": "Peanut Butter Cookies",
+      "category": "Cookies",
+      "price": 14,
+      "image": "https://images.unsplash.com/photo-1601001815356-2f6e6f432f66"
+    },
+    {
+      "id": "20",
+      "name": "Pain au Chocolat",
+      "category": "Pastries",
+      "price": 13,
+      "image": "https://images.unsplash.com/photo-1602351447937-745cb720612f"
+    },
+    {
+      "id": "21",
+      "name": "Red Velvet Cake",
+      "category": "Cakes",
+      "price": 42,
+      "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/red-velvet-cake-0f6e5a3.jpg"
+    },
+    {
+      "id": "22",
+      "name": "Ciabatta",
+      "category": "Breads",
+      "price": 20,
+      "image": "https://images.unsplash.com/photo-1587572626770-1b94fd09b1c0"
+    },
+    {
+      "id": "23",
+      "name": "Gingerbread Cookies",
+      "category": "Cookies",
+      "price": 12,
+      "image": "https://images.unsplash.com/photo-1608064962244-8b4c3e766f3b"
+    },
+    {
+      "id": "24",
+      "name": "Apple Strudel",
+      "category": "Pastries",
+      "price": 16,
+      "image": "https://images.unsplash.com/photo-1606800052052-c9e9e2071284"
+    },
+    {
+      "id": "25",
+      "name": "Vanilla Sponge Cake",
+      "category": "Cakes",
+      "price": 30,
+      "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/vanilla-cake-7d7b6e2.jpg"
+    },
+    {
+      "id": "26",
+      "name": "Multigrain Bread",
+      "category": "Breads",
+      "price": 24,
+      "image": "https://images.unsplash.com/photo-1589271264598-f2a5d6a2e6e9"
+    },
+    {
+      "id": "27",
+      "name": "Macadamia Nut Cookies",
+      "category": "Cookies",
+      "price": 16,
+      "image": "https://images.unsplash.com/photo-1598968318394-4e387ecf8898"
+    },
+    {
+      "id": "28",
+      "name": "Blueberry Muffin",
+      "category": "Pastries",
+      "price": 11,
+      "image": "https://images.unsplash.com/photo-1606312618589-1813f3fd6267"
+    },
+    {
+      "id": "29",
+      "name": "Strawberry Shortcake",
+      "category": "Cakes",
+      "price": 36,
+      "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/strawberry-shortcake-3f6c1e2.jpg"
+    },
+    {
+      "id": "30",
+      "name": "Focaccia",
+      "category": "Breads",
+      "price": 19,
+      "image": "https://images.unsplash.com/photo-1598304215136-9c8e4b53d4b6"
+    },
+    {
+      "id": "31",
+      "name": "Shortbread Cookies",
+      "category": "Cookies",
+      "price": 13,
+      "image": "https://images.unsplash.com/photo-1601001815356-2f6e6f432f66"
     }
   ],
-  "reviews": []
+  "reviews": [
+    {
+      "productId": "6",
+      "rating": 4.5,
+      "userId": "e89f"
+    },
+    {
+      "productId": "1",
+      "rating": 5,
+      "userId": "10"
+    },
+    {
+      "productId": "3",
+      "rating": 3.8,
+      "userId": "9be4"
+    }
+  ]
 }

@@ -106,3 +106,32 @@ input, select {
   width: 200px;
   text-align: center;
 }
+
+
+/* src/styles/Cart.css */
+.cart-card {
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cart-image {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+footer {
+  margin-top: auto;
+   
+}
