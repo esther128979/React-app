@@ -13,6 +13,7 @@ import {
   Spinner,
   Toast,
 } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
@@ -23,22 +24,29 @@ interface Product {
   price: number;
   image: string;
 }
+interface Review {
+  productId: string;
+  rating: number;
+  userId: string;
+}
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [showToast, setShowToast] = useState(false);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cart = useSelector((state: RootState) => state.cart.items);
 
   const fetchProducts = async () => {
     setLoading(true);
+
     const params: any = {
       _limit: 1000,
       _page: 1,
@@ -50,24 +58,43 @@ const Products = () => {
       params.price_lte = priceRange[1];
     }
 
-    const res = await api.get("/products", { params });
-    let data: Product[] = res.data;
+    try {
+      const res = await api.get("/products", { params });
+      let data: Product[] = res.data;
 
-    if (search) {
-      const searchLower = search.toLowerCase();
-      data = data.filter((p) =>
-        p.name.toLowerCase().includes(searchLower)
-      );
+      if (search) {
+        const searchLower = search.toLowerCase();
+        data = data.filter((p) =>
+          p.name.toLowerCase().includes(searchLower)
+        );
+      }
+
+      setAllProducts(data);
+      setProducts(data.slice(0, page * 20));
+    } catch (error) {
+      console.error("❌ Error fetching products:", error);
+    } finally {
+      setLoading(false);
     }
-
-    setAllProducts(data);
-    setProducts(data.slice(0, page * 20));
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchProducts();
   }, [search, category, priceRange, page]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 &&
+        !loading
+      ) {
+        setPage((prev) => prev + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loading]);
 
   const handleReset = () => {
     setSearch("");
@@ -75,20 +102,6 @@ const Products = () => {
     setPriceRange([0, 1000]);
     setPage(1);
   };
-
-  const handleScroll = () => {
-    if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 &&
-      !loading
-    ) {
-      setPage((prev) => prev + 1);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const handleAddToCart = (product: Product) => {
     const exists = cart.find((p) => p.id === product.id);
@@ -99,10 +112,45 @@ const Products = () => {
     setTimeout(() => setShowToast(false), 5000);
   };
 
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await api.get("/reviews");
+        setReviews(res.data);
+      } catch (err) {
+        console.error("Failed to fetch reviews", err);
+      }
+    };
+
+    fetchReviews();
+  }, []);
+
+  const getAverageRating = (productId: string) => {
+    const productReviews = reviews.filter((r) => r.productId === productId);
+    if (productReviews.length === 0) return null;
+
+    const sum = productReviews.reduce((acc, r) => acc + r.rating, 0);
+    return (sum / productReviews.length).toFixed(1);
+  };
+
   return (
-    
     <Container className="py-4">
       <h2 className="text-center mb-4">🍰 Explore Our Products</h2>
+
+      <div className="text-center mb-4">
+        <img
+          src="https://images.unsplash.com/photo-1606046604972-77cc76aee944"
+          alt="Delicious pastries"
+          style={{
+            width: "100%",
+            height: "225px",
+            borderRadius: "10px",
+            objectFit: "cover",
+          }}
+        />
+      </div>
 
       <Form className="mb-4">
         <Row className="g-3 align-items-center">
@@ -126,10 +174,10 @@ const Products = () => {
               }}
             >
               <option value="">All Categories</option>
-              <option value="מאפים">Pastries</option>
-              <option value="עוגות">Cakes</option>
-              <option value="לחמים">Breads</option>
-              <option value="עוגיות">Cookies</option>
+              <option value="Pastries">Pastries</option>
+              <option value="Cakes">Cakes</option>
+              <option value="Breads">Breads</option>
+              <option value="Cookies">Cookies</option>
             </Form.Select>
           </Col>
 
@@ -138,7 +186,7 @@ const Products = () => {
             <Slider
               range
               min={0}
-              max={1000}
+              max={100}
               value={priceRange}
               onChange={(value) => {
                 setPage(1);
@@ -161,7 +209,11 @@ const Products = () => {
       <Row>
         {products.map((p) => (
           <Col key={p.id} xs={12} md={6} lg={4} xl={3} className="mb-4">
-            <Card className="shadow-sm h-100">
+            <Card
+              className="shadow-sm h-100"
+              onClick={() => navigate(`/products/${p.id}`)}
+              style={{ cursor: "pointer" }}
+            >
               <div style={{ height: "200px", overflow: "hidden" }}>
                 <Card.Img
                   variant="top"
@@ -177,9 +229,19 @@ const Products = () => {
                 <Card.Title>{p.name}</Card.Title>
                 <Card.Text className="mb-2 text-muted">{p.category}</Card.Text>
                 <Card.Text className="fw-bold">₪{p.price}</Card.Text>
+
+                <Card.Text className="text-warning">
+                  {getAverageRating(p.id.toString())
+                    ? `⭐ ${getAverageRating(p.id.toString())}/5`
+                    : "No ratings yet"}
+                </Card.Text>
+
                 <Button
                   variant="success"
-                  onClick={() => handleAddToCart(p)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // מונע מעבר לדף פרטים
+                    handleAddToCart(p);
+                  }}
                   className="mt-auto"
                 >
                   Add to Cart
@@ -212,4 +274,3 @@ const Products = () => {
 };
 
 export default Products;
-

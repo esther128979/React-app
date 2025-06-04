@@ -25,7 +25,7 @@ const Login = () => {
               src="https://i.etsystatic.com/54907703/r/il/ca160c/6688687115/il_fullxfull.6688687115_i6ss.jpg"
               alt="Cookies"
               className="img-fluid rounded shadow-sm"
-              style={{ maxHeight: "350px", objectFit: "cover" }}
+              style={{ maxHeight: "400px", objectFit: "cover" }}
             />
           </Col>
 
@@ -84,7 +84,7 @@ const Login = () => {
 
                   <div className="text-center mt-3 small">
                     Don't have an account?{" "}
-                    <a href="/register" className="text-decoration-underline">Register here</a>
+                    <a href="/register" className="text-decoration-underline">Register here </a>
                   </div>
                 </Form>
               </Formik>

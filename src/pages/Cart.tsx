@@ -1,8 +1,8 @@
-// עגלת קניות - סכום כולל בראש + עיצוב תמונות אחיד לקונדיטוריה
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { removeFromCart, clearCart } from "../redux/cartSlice";
+import { useMemo } from "react";
 
 const Cart = () => {
   const cart = useSelector((state: RootState) => state.cart.items);
@@ -18,7 +18,11 @@ const Cart = () => {
     }
   };
 
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  // חישוב סכום כולל בעזרת useMemo - מחשב מחדש רק כשיש שינוי בעגלה
+  const total = useMemo(() => {
+    console.log("Calculating total price...");
+    return cart.reduce((sum, item) => sum + item.price, 0);
+  }, [cart]);
 
   return (
     <Container className="py-4">

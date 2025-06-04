@@ -2,13 +2,29 @@ import { Navbar, Container, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { useEffect } from "react";
 
 const Header = () => {
   const cartCount = useSelector((state: RootState) => state.cart.items.length);
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
+  // התאמת ה-padding-top של הדף כדי שהתוכן לא יכסה את ה-Header
+  useEffect(() => {
+    document.body.style.paddingTop = "70px"; // מתאים לגובה ה-Navbar
+  }, []);
+
   return (
-    <Navbar style={{ backgroundColor: "#4e342e" }} variant="dark" expand="lg">
+    <Navbar
+      style={{
+        backgroundColor: "#4e342e",
+        position: "fixed",
+        top: 0,
+        width: "100%",
+        zIndex: 1000
+      }}
+      variant="dark"
+      expand="lg"
+    >
       <Container>
         <Navbar.Brand as={Link} to="/" className="fw-bold text-warning">
           🍪 Cookie Monster

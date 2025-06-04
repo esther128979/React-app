@@ -21,14 +21,25 @@ interface Product {
   image: string;
 }
 
+interface Review {
+  id: string;
+  productId: string;
+  rating: number;
+  userId: string;
+}
+
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string>("");
+  const [rating, setRating] = useState<number>(0);
+  const [userReview, setUserReview] = useState<Review | null>(null);
 
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart.items);
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -42,31 +53,79 @@ const ProductDetails = () => {
       }
     };
 
+    const fetchUserReview = async () => {
+      if (!currentUser || !id) return;
+      try {
+        const res = await api.get("/reviews", {
+          params: {
+            productId: id,
+            userId: currentUser.id,
+          },
+        });
+
+        if (res.data.length > 0) {
+          setUserReview(res.data[0]);
+          setRating(res.data[0].rating);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user review", err);
+      }
+    };
+
     fetchProduct();
-  }, [id]);
+    fetchUserReview();
+  }, [id, currentUser]);
 
   const handleAddToCart = () => {
     if (!product) return;
 
     const exists = cart.find((p) => p.id === Number(product.id));
     if (exists) {
-      alert("המוצר כבר נמצא בסל!");
+      setToastMessage("🛒 This product is already in your cart!");
+      setShowToast(true);
       return;
     }
 
     dispatch(addToCart({ ...product, id: Number(product.id) }));
+    setToastMessage("🎉 Product added to cart!");
     setShowToast(true);
+  };
 
-    setTimeout(() => {
-      setShowToast(false);
-    }, 5000); // 5 שניות
+  const handleRatingClick = async (selectedRating: number) => {
+    if (!currentUser || !id) return;
+
+    try {
+      if (userReview) {
+        await api.put(`/reviews/${userReview.id}`, {
+          ...userReview,
+          rating: selectedRating,
+        });
+        setUserReview({ ...userReview, rating: selectedRating });
+        setRating(selectedRating);
+        setToastMessage("✅ Your rating has been updated!");
+      } else {
+        const res = await api.post("/reviews", {
+          productId: id,
+          userId: currentUser.id,
+          rating: selectedRating,
+        });
+        setUserReview(res.data);
+        setRating(selectedRating);
+        setToastMessage("✅ Your rating has been added!");
+      }
+      setShowToast(true);
+    } catch (err) {
+      console.error("Failed to submit rating", err);
+      setToastMessage("❌ Error saving your rating!");
+      setShowToast(true);
+    }
   };
 
   if (loading) {
     return (
       <Container className="text-center my-5">
         <Spinner animation="border" />
-        <p>טוען פרטי מוצר...</p>
+        <p>Loading product details...</p>
       </Container>
     );
   }
@@ -74,13 +133,14 @@ const ProductDetails = () => {
   if (!product) {
     return (
       <Container className="text-center my-5">
-        <h4>המוצר לא נמצא</h4>
+        <h4>Product not found</h4>
       </Container>
     );
   }
 
   return (
     <Container className="py-4">
+      {/* Toast message */}
       <ToastContainer position="bottom-end" className="p-3">
         <Toast
           show={showToast}
@@ -88,23 +148,62 @@ const ProductDetails = () => {
           bg="success"
           delay={5000}
           autohide
+          style={{ fontSize: "1rem", minWidth: "220px" }}
         >
-          <Toast.Header>
-            <strong className="me-auto"> Cart </strong>
-          </Toast.Header>
-          <Toast.Body className="text-white">🎉The product has been added to Cart</Toast.Body>
+          <Toast.Body className="text-white fw-bold text-center">
+            {toastMessage}
+          </Toast.Body>
         </Toast>
       </ToastContainer>
 
-      <Card>
-        <Card.Img variant="top" src={product.image} />
+      <Card className="shadow p-3">
+        <Card.Img
+          variant="top"
+          src={product.image}
+          style={{ maxHeight: "400px", objectFit: "cover", borderRadius: "5px" }}
+        />
         <Card.Body>
-          <Card.Title>{product.name}</Card.Title>
-          <Card.Text>קטגוריה: {product.category}</Card.Text>
-          <Card.Text>מחיר: ₪{product.price}</Card.Text>
-          <Button variant="success" onClick={handleAddToCart}>
-            הוסף לסל
+          <Card.Title className="fw-bold fs-4">{product.name}</Card.Title>
+          <Card.Text className="text-muted">{product.category}</Card.Text>
+          <Card.Text className="fw-bold fs-5 text-success">
+            ₪{product.price}
+          </Card.Text>
+
+          <Button
+            variant="success"
+            className="w-100 my-2"
+            onClick={handleAddToCart}
+          >
+            Add to Cart
           </Button>
+
+          {/* Rating */}
+          <div className="mt-4 border-top pt-3">
+            <h5 className="mb-2">⭐ Rate this product</h5>
+            <div>
+              {[1, 2, 3, 4, 5].map((index) => (
+                <span
+                  key={index}
+                  onClick={() => handleRatingClick(index)}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = "#ffc107")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color =
+                      index <= rating ? "#ffc107" : "#e4e5e9")
+                  }
+                  style={{
+                    cursor: "pointer",
+                    fontSize: "1.8rem",
+                    color: index <= rating ? "#ffc107" : "#e4e5e9",
+                    transition: "color 0.2s",
+                  }}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+          </div>
         </Card.Body>
       </Card>
     </Container>

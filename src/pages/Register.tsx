@@ -4,10 +4,13 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 import { useState } from "react";
 import { Container, Button, Alert, Card } from "react-bootstrap";
-
+import "../index.css";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/userSlice";
 
 const Register = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [serverError, setServerError] = useState("");
 
   const validationSchema = Yup.object({
@@ -40,6 +43,7 @@ const Register = () => {
           onSubmit={async (values, { setSubmitting, setFieldError, resetForm }) => {
             setServerError("");
             try {
+              // בדיקת כפילות אימייל
               const check = await api.get("/users", {
                 params: { email: values.email },
               });
@@ -50,18 +54,35 @@ const Register = () => {
                 return;
               }
 
+              // יצירת משתמש חדש
               await api.post("/users", {
                 email: values.email,
                 password: values.password,
                 isAdmin: false,
               });
 
-              alert("Registered successfully!");
-              resetForm();
-              navigate("/login");
+              // שליפת פרטי המשתמש לצורך התחברות
+              const res = await api.get("/users", {
+                params: {
+                  email: values.email,
+                  password: values.password,
+                },
+              });
+
+              if (res.data.length === 1) {
+                const user = res.data[0];
+                dispatch(login(user)); // 👈 שמירה ב־Redux
+                resetForm();
+                navigate("/"); // 👈 מעבר הביתה אחרי התחברות
+              } else {
+                setServerError("Could not retrieve user after registration.");
+              }
+
             } catch (err) {
+              console.error(err);
               setServerError("Error saving user.");
             }
+
             setSubmitting(false);
           }}
         >
