@@ -53,6 +53,12 @@
       "email": "kmrenana@gmail.com",
       "password": "Ar145145%",
       "isAdmin": false
+    },
+    {
+      "id": "4ce1",
+      "email": "leah23531@gmail.com",
+      "password": "Leah22!!",
+      "isAdmin": false
     }
   ],
   "products": [
@@ -244,6 +250,13 @@
       "category": "Cookies",
       "price": 10,
       "image": "https://notonlysaladblog.com/wp-content/uploads/2017/07/Alf-maicena-3-Large.jpg"
+    },
+    {
+      "id": "8fe1",
+      "name": "chocolate cake",
+      "category": "Cakes",
+      "price": 77,
+      "image": "https://tatyanaseverydayfood.com/wp-content/uploads/2022/03/The-Best-Dark-Chocolate-Cake-Recipe-3.jpg"
     }
   ],
   "reviews": [
@@ -372,6 +385,18 @@
       "productId": "267d",
       "userId": "10",
       "rating": 2
+    },
+    {
+      "id": "5da5",
+      "productId": "1",
+      "userId": "4ce1",
+      "rating": 3
+    },
+    {
+      "id": "1499",
+      "productId": "6",
+      "userId": "4ce1",
+      "rating": 5
     }
   ]
 }
