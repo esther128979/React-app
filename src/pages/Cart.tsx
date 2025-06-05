@@ -1,15 +1,16 @@
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Toast, ToastContainer } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { removeFromCart, clearCart } from "../redux/cartSlice";
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 
 const Cart = () => {
   const cart = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch();
+  const [showToast, setShowToast] = useState(false);
 
-  const handleRemove = (id: number) => {
-    dispatch(removeFromCart(id));
+  const handleRemove = (id: string) => {
+    dispatch(removeFromCart (id));
   };
 
   const handleClearCart = () => {
@@ -18,7 +19,11 @@ const Cart = () => {
     }
   };
 
-  // חישוב סכום כולל בעזרת useMemo - מחשב מחדש רק כשיש שינוי בעגלה
+  const handleFinishOrder = () => {
+    dispatch(clearCart());
+    setShowToast(true);
+  };
+
   const total = useMemo(() => {
     console.log("Calculating total price...");
     return cart.reduce((sum, item) => sum + item.price, 0);
@@ -32,19 +37,20 @@ const Cart = () => {
         <p className="text-center">Your cart is currently empty 🍪</p>
       ) : (
         <>
-          {/* סכום כולל בראש הדף */}
           <Card className="mb-4 shadow-sm border-success">
             <Card.Body className="text-center">
               <h4 className="text-success mb-1">Total to Pay:</h4>
               <h2 className="fw-bold text-success">₪{total}</h2>
               <p className="text-muted">You have {cart.length} items in your cart</p>
-              <Button variant="outline-danger" onClick={handleClearCart}>
+              <Button variant="outline-danger" onClick={handleClearCart} className="me-2">
                 Clear Cart
+              </Button>
+              <Button variant="success" onClick={handleFinishOrder}>
+                Finish Order
               </Button>
             </Card.Body>
           </Card>
 
-          {/* רשימת המוצרים */}
           <Row>
             {cart.map((item) => (
               <Col key={item.id} xs={12} md={6} lg={4} xl={3} className="mb-4">
@@ -76,6 +82,24 @@ const Cart = () => {
           </Row>
         </>
       )}
+
+      {/* Toast להודעה */}
+      <ToastContainer position="top-end" className="p-3">
+        <Toast
+          onClose={() => setShowToast(false)}
+          show={showToast}
+          delay={3000}
+          autohide
+          bg="success"
+        >
+          <Toast.Header>
+            <strong className="me-auto">Order Status</strong>
+          </Toast.Header>
+          <Toast.Body className="text-white">
+            Your order has been successfully placed! 🎉
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
     </Container>
   );
 };

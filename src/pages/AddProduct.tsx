@@ -9,7 +9,6 @@ const AddProduct = () => {
   const [image, setImage] = useState("");
   const [success, setSuccess] = useState(false);
 
-  // שליחת טופס והוספת מוצר חדש
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -27,26 +26,26 @@ const AddProduct = () => {
       setPrice("");
       setImage("");
     } catch (err) {
-      alert("שגיאה בהוספת מוצר");
+      alert("Error adding product. Please try again.");
     }
   };
 
   return (
     <Container className="py-4">
-      <h2 className="mb-4">הוספת מוצר חדש</h2>
+      <h2 className="mb-4 text-center">Add New Product</h2>
 
-      {success && <Alert variant="success">המוצר נוסף בהצלחה!</Alert>}
+      {success && <Alert variant="success">Product added successfully!</Alert>}
 
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
-          <Form.Label>שם המוצר</Form.Label>
+          <Form.Label>Product Name</Form.Label>
           <Form.Control value={name} onChange={(e) => setName(e.target.value)} required />
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label>קטגוריה</Form.Label>
+          <Form.Label>Category</Form.Label>
           <Form.Select value={category} onChange={(e) => setCategory(e.target.value)} required>
-            <option value="">בחר קטגוריה</option>
+            <option value="">Select category</option>
             <option value="Pastries">Pastries</option>
             <option value="Cakes">Cakes</option>
             <option value="Breads">Breads</option>
@@ -55,7 +54,7 @@ const AddProduct = () => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label>מחיר</Form.Label>
+          <Form.Label>Price</Form.Label>
           <Form.Control
             type="number"
             value={price}
@@ -65,7 +64,7 @@ const AddProduct = () => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label>כתובת תמונה</Form.Label>
+          <Form.Label>Image URL</Form.Label>
           <Form.Control
             value={image}
             onChange={(e) => setImage(e.target.value)}
@@ -74,7 +73,7 @@ const AddProduct = () => {
         </Form.Group>
 
         <Button type="submit" variant="primary">
-          הוסף מוצר
+          Add Product
         </Button>
       </Form>
     </Container>
