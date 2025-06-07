@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import api from "../services/api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Product {
   id: string;
@@ -32,23 +34,21 @@ const EditProductModal = ({ show, handleClose, product, onSave }: EditProductMod
   const handleSave = async () => {
     if (!formData || !product) return;
 
-    // שולחים את כל המידע – אם שדה ריק, לוקחים מהמקור
     const fullData = {
-      id:  String(product.id),
+      id: String(product.id),
       name: formData.name.trim() !== "" ? formData.name : product.name,
       category: formData.category.trim() !== "" ? formData.category : product.category,
-      price: String(formData.price )|| product.price,
+      price: Number(formData.price) || product.price,
       image: formData.image.trim() !== "" ? formData.image : product.image,
     };
 
     try {
       await api.put(`/products/${product.id}`, fullData);
-      alert("Product updated successfully!");
+      toast.success("✅ Product updated successfully!", { position: "bottom-right", autoClose: 3000 });
       onSave();
       handleClose();
     } catch (error) {
-      console.error("Failed to update product:", error);
-      alert("Error updating product. Please try again.");
+      toast.error("❌ Error updating product. Please try again.", { position: "bottom-right", autoClose: 3000 });
     }
   };
 

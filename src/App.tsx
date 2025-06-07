@@ -10,6 +10,7 @@ import AddProduct from "./pages/AddProduct";
 import Header from "./Components/Header";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Footer from "./Components/Footer";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -76,7 +77,9 @@ function App() {
 
       {/* Footer דבוק למטה */}
       <Footer />
+      <ToastContainer />
     </div>
+    
   );
 }
 

@@ -10,7 +10,7 @@ const Cart = () => {
   const [showToast, setShowToast] = useState(false);
 
   const handleRemove = (id: string) => {
-    dispatch(removeFromCart (id));
+    dispatch(removeFromCart(id));
   };
 
   const handleClearCart = () => {
@@ -25,53 +25,53 @@ const Cart = () => {
   };
 
   const total = useMemo(() => {
-    console.log("Calculating total price...");
     return cart.reduce((sum, item) => sum + item.price, 0);
   }, [cart]);
 
   return (
     <Container className="py-4">
-      <h2 className="mb-4 text-center">🧺 Your Shopping Cart</h2>
+      <h2 className="mb-4 text-center fw-bold">🛒 Your Shopping Cart</h2>
 
       {cart.length === 0 ? (
-        <p className="text-center">Your cart is currently empty 🍪</p>
+        <p className="text-center text-muted fs-5">Your cart is currently empty 🍪</p>
       ) : (
         <>
-          <Card className="mb-4 shadow-sm border-success">
-            <Card.Body className="text-center">
-              <h4 className="text-success mb-1">Total to Pay:</h4>
+          <Card className="mb-4 shadow border-0 rounded-4 bg-light text-center">
+            <Card.Body>
+              <h4 className="mb-1 text-primary">Total to Pay:</h4>
               <h2 className="fw-bold text-success">₪{total}</h2>
-              <p className="text-muted">You have {cart.length} items in your cart</p>
-              <Button variant="outline-danger" onClick={handleClearCart} className="me-2">
-                Clear Cart
-              </Button>
-              <Button variant="success" onClick={handleFinishOrder}>
-                Finish Order
-              </Button>
+              <p className="text-muted mb-3">You have {cart.length} items in your cart</p>
+              <div className="d-flex justify-content-center gap-3">
+                <Button variant="outline-danger" onClick={handleClearCart} className="rounded-pill px-4">
+                  🗑️ Clear
+                </Button>
+                <Button variant="success" onClick={handleFinishOrder} className="rounded-pill px-4">
+                  ✅ Checkout
+                </Button>
+              </div>
             </Card.Body>
           </Card>
 
-          <Row>
+          <Row className="g-4">
             {cart.map((item) => (
-              <Col key={item.id} xs={12} md={6} lg={4} xl={3} className="mb-4">
-                <Card className="shadow-sm h-100 d-flex flex-column">
-                  <Card.Img
-                    variant="top"
-                    src={item.image}
+              <Col key={item.id} xs={12} sm={6} md={4} lg={3}>
+                <Card className="h-100 shadow-sm border-0 rounded-4 overflow-hidden d-flex flex-column">
+                  <div
                     style={{
-                      height: "250px",
-                      objectFit: "cover",
-                      borderBottom: "1px solid #eee",
+                      height: "200px",
+                      background: `url(${item.image}) center/cover no-repeat`,
                     }}
                   />
-                  <Card.Body className="text-center d-flex flex-column justify-content-between">
+                  <Card.Body className="d-flex flex-column justify-content-between p-3">
                     <div>
-                      <Card.Title>{item.name}</Card.Title>
-                      <Card.Text className="fw-bold">₪{item.price}</Card.Text>
+                      <Card.Title className="fs-6 fw-bold text-truncate">{item.name}</Card.Title>
+                      <Card.Text className="fw-bold text-success">₪{item.price}</Card.Text>
                     </div>
                     <Button
                       variant="outline-danger"
+                      size="sm"
                       onClick={() => handleRemove(item.id)}
+                      className="rounded-pill mt-2"
                     >
                       Remove
                     </Button>
@@ -83,7 +83,7 @@ const Cart = () => {
         </>
       )}
 
-      {/* Toast להודעה */}
+      {/* Toast הודעה */}
       <ToastContainer position="top-end" className="p-3">
         <Toast
           onClose={() => setShowToast(false)}
@@ -92,11 +92,11 @@ const Cart = () => {
           autohide
           bg="success"
         >
-          <Toast.Header>
-            <strong className="me-auto">Order Status</strong>
+          <Toast.Header closeButton={false}>
+            <strong className="me-auto text-white">Order Status</strong>
           </Toast.Header>
           <Toast.Body className="text-white">
-            Your order has been successfully placed! 🎉
+            🎉 Your order has been successfully placed!
           </Toast.Body>
         </Toast>
       </ToastContainer>

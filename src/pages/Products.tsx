@@ -1,279 +1,3 @@
-// import { useEffect, useState } from "react";
-// import api from "../services/api";
-// import { useDispatch, useSelector } from "react-redux";
-// import { addToCart } from "../redux/cartSlice";
-// import { RootState } from "../redux/store";
-// import {
-//   Container,
-//   Row,
-//   Col,
-//   Card,
-//   Form,
-//   Button,
-//   Spinner,
-//   Toast,
-// } from "react-bootstrap";
-// import { useNavigate } from "react-router-dom";
-// import Slider from "rc-slider";
-// import "rc-slider/assets/index.css";
-
-// interface Product {
-//   id: number;
-//   name: string;
-//   category: string;
-//   price: number;
-//   image: string;
-// }
-// interface Review {
-//   productId: string;
-//   rating: number;
-//   userId: string;
-// }
-
-// const Products = () => {
-//   const [products, setProducts] = useState<Product[]>([]);
-//   const [search, setSearch] = useState("");
-//   const [category, setCategory] = useState("");
-//   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
-//   const [page, setPage] = useState(1);
-//   const [loading, setLoading] = useState(false);
-//   const [allProducts, setAllProducts] = useState<Product[]>([]);
-//   const [showToast, setShowToast] = useState(false);
-
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-//   const cart = useSelector((state: RootState) => state.cart.items);
-
-//   const fetchProducts = async () => {
-//     setLoading(true);
-
-//     const params: any = {
-//       _limit: 1000,
-//       _page: 1,
-//     };
-
-//     if (category) params.category = category;
-//     if (priceRange) {
-//       params.price_gte = priceRange[0];
-//       params.price_lte = priceRange[1];
-//     }
-
-//     try {
-//       const res = await api.get("/products", { params });
-//       let data: Product[] = res.data;
-
-//       if (search) {
-//         const searchLower = search.toLowerCase();
-//         data = data.filter((p) =>
-//           p.name.toLowerCase().includes(searchLower)
-//         );
-//       }
-
-//       setAllProducts(data);
-//       setProducts(data.slice(0, page * 20));
-//     } catch (error) {
-//       console.error("❌ Error fetching products:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchProducts();
-//   }, [search, category, priceRange, page]);
-
-//   useEffect(() => {
-//     const handleScroll = () => {
-//       if (
-//         window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 &&
-//         !loading
-//       ) {
-//         setPage((prev) => prev + 1);
-//       }
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, [loading]);
-
-//   const handleReset = () => {
-//     setSearch("");
-//     setCategory("");
-//     setPriceRange([0, 1000]);
-//     setPage(1);
-//   };
-
-//   const handleAddToCart = (product: Product) => {
-//     const exists = cart.find((p) => p.id === product.id);
-//     if (exists) return;
-
-//     dispatch(addToCart(product));
-//     setShowToast(true);
-//     setTimeout(() => setShowToast(false), 5000);
-//   };
-
-//   const [reviews, setReviews] = useState<Review[]>([]);
-
-//   useEffect(() => {
-//     const fetchReviews = async () => {
-//       try {
-//         const res = await api.get("/reviews");
-//         setReviews(res.data);
-//       } catch (err) {
-//         console.error("Failed to fetch reviews", err);
-//       }
-//     };
-
-//     fetchReviews();
-//   }, []);
-
-//   const getAverageRating = (productId: string) => {
-//     const productReviews = reviews.filter((r) => r.productId === productId);
-//     if (productReviews.length === 0) return null;
-
-//     const sum = productReviews.reduce((acc, r) => acc + r.rating, 0);
-//     return (sum / productReviews.length).toFixed(1);
-//   };
-
-//   return (
-//     <Container className="py-4">
-//       <h2 className="text-center mb-4">🍰 Explore Our Products</h2>
-
-//       <div className="text-center mb-4">
-//         <img
-//           src="https://images.unsplash.com/photo-1606046604972-77cc76aee944"
-//           alt="Delicious pastries"
-//           style={{
-//             width: "100%",
-//             height: "225px",
-//             borderRadius: "10px",
-//             objectFit: "cover",
-//           }}
-//         />
-//       </div>
-
-//       <Form className="mb-4">
-//         <Row className="g-3 align-items-center">
-//           <Col md={3}>
-//             <Form.Control
-//               placeholder="Search by name"
-//               value={search}
-//               onChange={(e) => {
-//                 setPage(1);
-//                 setSearch(e.target.value);
-//               }}
-//             />
-//           </Col>
-
-//           <Col md={3}>
-//             <Form.Select
-//               value={category}
-//               onChange={(e) => {
-//                 setPage(1);
-//                 setCategory(e.target.value);
-//               }}
-//             >
-//               <option value="">All Categories</option>
-//               <option value="Pastries">Pastries</option>
-//               <option value="Cakes">Cakes</option>
-//               <option value="Breads">Breads</option>
-//               <option value="Cookies">Cookies</option>
-//             </Form.Select>
-//           </Col>
-
-//           <Col md={4}>
-//             <label className="form-label">Price range:</label>
-//             <Slider
-//               range
-//               min={0}
-//               max={100}
-//               value={priceRange}
-//               onChange={(value) => {
-//                 setPage(1);
-//                 setPriceRange(value as [number, number]);
-//               }}
-//             />
-//             <div className="text-center mt-1">
-//               ₪{priceRange[0]} - ₪{priceRange[1]}
-//             </div>
-//           </Col>
-
-//           <Col md={2}>
-//             <Button variant="secondary" onClick={handleReset}>
-//               Reset Filters
-//             </Button>
-//           </Col>
-//         </Row>
-//       </Form>
-
-//       <Row>
-//         {products.map((p) => (
-//           <Col key={p.id} xs={12} md={6} lg={4} xl={3} className="mb-4">
-//             <Card
-//               className="shadow-sm h-100"
-//               onClick={() => navigate(`/products/${p.id}`)}
-//               style={{ cursor: "pointer" }}
-//             >
-//               <div style={{ height: "200px", overflow: "hidden" }}>
-//                 <Card.Img
-//                   variant="top"
-//                   src={p.image}
-//                   style={{
-//                     height: "100%",
-//                     width: "100%",
-//                     objectFit: "cover",
-//                   }}
-//                 />
-//               </div>
-//               <Card.Body className="text-center d-flex flex-column">
-//                 <Card.Title>{p.name}</Card.Title>
-//                 <Card.Text className="mb-2 text-muted">{p.category}</Card.Text>
-//                 <Card.Text className="fw-bold">₪{p.price}</Card.Text>
-
-//                 <Card.Text className="text-warning">
-//                   {getAverageRating(p.id.toString())
-//                     ? `⭐ ${getAverageRating(p.id.toString())}/5`
-//                     : "No ratings yet"}
-//                 </Card.Text>
-
-//                 <Button
-//                   variant="success"
-//                   onClick={(e) => {
-//                     e.stopPropagation(); // מונע מעבר לדף פרטים
-//                     handleAddToCart(p);
-//                   }}
-//                   className="mt-auto"
-//                 >
-//                   Add to Cart
-//                 </Button>
-//               </Card.Body>
-//             </Card>
-//           </Col>
-//         ))}
-//       </Row>
-
-//       {loading && (
-//         <div className="text-center mt-3">
-//           <Spinner animation="border" />
-//           <p>Loading more...</p>
-//         </div>
-//       )}
-
-//       <Toast
-//         show={showToast}
-//         onClose={() => setShowToast(false)}
-//         delay={5000}
-//         autohide
-//         bg="success"
-//         className="position-fixed bottom-0 end-0 m-4 text-white"
-//       >
-//         <Toast.Body>🎉 The product has been added to the cart</Toast.Body>
-//       </Toast>
-//     </Container>
-//   );
-// };
-
-// export default Products;
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { useDispatch, useSelector } from "react-redux";
@@ -309,15 +33,16 @@ interface Review {
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -325,12 +50,15 @@ const Products = () => {
   const user = useSelector((state: RootState) => state.user.currentUser);
 
   const fetchProducts = async () => {
-    setLoading(true);
+    if (!hasMore) return;
 
+    setLoading(true);
     const params: any = {
-      _limit: 1000,
-      _page: 1,
+      _limit: 20,
+      _page: page,
     };
+
+    if (search) params.q = search;
     if (category) params.category = category;
     if (priceRange) {
       params.price_gte = priceRange[0];
@@ -339,44 +67,64 @@ const Products = () => {
 
     try {
       const res = await api.get("/products", { params });
-      let data: Product[] = res.data;
+      const data: Product[] = res.data;
 
-      if (search) {
-        const searchLower = search.toLowerCase();
-        data = data.filter((p) =>
-          p.name.toLowerCase().includes(searchLower)
-        );
+      if (data.length === 0) {
+        setHasMore(false);
+        return;
       }
-      setProducts(data.slice(0, page * 20));
-    } catch (error) {
-      console.error("❌ Error fetching products:", error);
+
+      setProducts((prev) => (page === 1 ? data : [...prev, ...data]));
+    } catch (err) {
+      console.error("Error loading products:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchReviews = async () => {
+    try {
+      const res = await api.get("/reviews");
+      setReviews(res.data);
+    } catch (err) {
+      console.error("Failed to fetch reviews", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  // קריאה מחודשת כשמשנים פילטרים – איפוס מוצרים והעמוד
+  useEffect(() => {
+    setProducts([]);
+    setPage(1);
+    setHasMore(true);
+  }, [search, category, priceRange]);
+
+  // קריאת מוצרים בכל שינוי עמוד
   useEffect(() => {
     fetchProducts();
-  }, [search, category, priceRange, page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, search, category, priceRange]);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 &&
-        !loading
-      ) {
+      if (!hasMore || loading) return;
+
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
         setPage((prev) => prev + 1);
       }
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [loading]);
+  }, [loading, hasMore]);
 
   const handleReset = () => {
     setSearch("");
     setCategory("");
     setPriceRange([0, 100]);
-    setPage(1);
   };
 
   const handleAddToCart = (product: Product) => {
@@ -395,28 +143,13 @@ const Products = () => {
   const handleDeleteProduct = async (e: React.MouseEvent, productId: string) => {
     e.stopPropagation();
     if (!window.confirm("Are you sure you want to delete this product?")) return;
-
     try {
       await api.delete(`/products/${productId}`);
-      alert("Product deleted successfully!");
-      fetchProducts();
+      setPage(1); // איפוס עמודים
     } catch (error) {
       console.error("Failed to delete product:", error);
-      alert("Error deleting product. Please try again.");
     }
   };
-
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const res = await api.get("/reviews");
-        setReviews(res.data);
-      } catch (err) {
-        console.error("Failed to fetch reviews", err);
-      }
-    };
-    fetchReviews();
-  }, []);
 
   const getAverageRating = (productId: string) => {
     const productReviews = reviews.filter((r) => r.productId === productId);
@@ -427,7 +160,7 @@ const Products = () => {
 
   return (
     <Container className="py-4">
-      <h2 className="text-center mb-4">🍰 Explore Our Products</h2>
+      <h2 className="text-center mb-4"> Explore Our Products 🍰</h2>
 
       {user?.isAdmin && (
         <div className="text-center mb-4">
@@ -443,13 +176,13 @@ const Products = () => {
             <Form.Control
               placeholder="Search by name"
               value={search}
-              onChange={(e) => { setPage(1); setSearch(e.target.value); }}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </Col>
           <Col md={3}>
             <Form.Select
               value={category}
-              onChange={(e) => { setPage(1); setCategory(e.target.value); }}
+              onChange={(e) => setCategory(e.target.value)}
             >
               <option value="">All Categories</option>
               <option value="Pastries">Pastries</option>
@@ -459,13 +192,13 @@ const Products = () => {
             </Form.Select>
           </Col>
           <Col md={4}>
-            <label className="form-label">Price range:</label>
+            <label className="form-label">Price range</label>
             <Slider
               range
               min={0}
               max={100}
               value={priceRange}
-              onChange={(value) => { setPage(1); setPriceRange(value as [number, number]); }}
+              onChange={(value) => setPriceRange(value as [number, number])}
             />
             <div className="text-center mt-1">₪{priceRange[0]} - ₪{priceRange[1]}</div>
           </Col>
@@ -476,8 +209,8 @@ const Products = () => {
       </Form>
 
       <Row>
-        {products.map((p) => (
-          <Col key={p.id} xs={12} md={6} lg={4} xl={3} className="mb-4">
+        {products.map((p, index) => (
+          <Col key={`${p.id}-${index}`} xs={12} md={6} lg={4} xl={3} className="mb-4">
             <Card className="shadow-sm h-100" onClick={() => navigate(`/products/${p.id}`)} style={{ cursor: "pointer" }}>
               <div style={{ height: "200px", overflow: "hidden" }}>
                 <Card.Img variant="top" src={p.image} style={{ height: "100%", width: "100%", objectFit: "cover" }} />
@@ -487,7 +220,7 @@ const Products = () => {
                 <Card.Text className="mb-2 text-muted">{p.category}</Card.Text>
                 <Card.Text className="fw-bold">₪{p.price}</Card.Text>
                 <Card.Text className="text-warning">
-                  {getAverageRating(p.id.toString()) ? `⭐ ${getAverageRating(p.id.toString())}/5` : "No ratings yet"}
+                  {getAverageRating(p.id) ? `⭐ ${getAverageRating(p.id)}/5` : "No ratings yet"}
                 </Card.Text>
                 <Button variant="success" onClick={(e) => { e.stopPropagation(); handleAddToCart(p); }} className="mt-auto">Add to Cart</Button>
 
@@ -506,7 +239,7 @@ const Products = () => {
       {loading && (
         <div className="text-center mt-3">
           <Spinner animation="border" />
-          <p>Loading more...</p>
+          <p>Loading more products...</p>
         </div>
       )}
 
@@ -518,7 +251,7 @@ const Products = () => {
         show={showEditModal}
         handleClose={() => setShowEditModal(false)}
         product={productToEdit}
-        onSave={fetchProducts}
+        onSave={() => setPage(1)}
       />
     </Container>
   );
