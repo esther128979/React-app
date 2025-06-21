@@ -1,8 +1,8 @@
 # Getting Started with  React App
-מ
-npm i
-npx json-server --watch db.json --port 4000  
-npm start 
+
+# npm i
+# npx json-server --watch db.json --port 4000  
+# npm start 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
